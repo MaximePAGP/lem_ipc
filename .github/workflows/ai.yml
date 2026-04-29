@@ -9,9 +9,6 @@ jobs:
     environment: review
 
     steps:
-      - name: Checkout project
-        uses: actions/checkout@v3
-
       - name: Checkout AI reviewer
         uses: actions/checkout@v3
         with:

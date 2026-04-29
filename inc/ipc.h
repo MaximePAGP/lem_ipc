@@ -71,6 +71,6 @@ typedef struct  s_msg {
     char    mtext[128];
 }   t_msg;
 
-bool    g_has_running = true;
+extern  bool g_has_running;
 
 #endif

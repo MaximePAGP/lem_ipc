@@ -7,4 +7,3 @@ int main(int argc, char **argv) {
     (void)argv;
     return (EXIT_SUCCESS);
 }
-aze

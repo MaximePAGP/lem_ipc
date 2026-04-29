@@ -1,0 +1,16 @@
+name: Check Compilation
+
+on:
+  push:
+
+jobs:
+  check-compilation:
+    name: Run make
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone projet to current dir
+        uses: actions/checkout@v3
+      
+      - name: Compile
+        run: make
+        continue-on-error: false

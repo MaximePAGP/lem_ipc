@@ -9,6 +9,11 @@ jobs:
     environment: review
 
     steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Checkout AI reviewer
         uses: actions/checkout@v3
         with:
@@ -18,8 +23,8 @@ jobs:
 
       - name: Get diff
         run: |
-          git fetch origin main
-          git diff origin/main > diff.txt
+          git fetch origin ${{ github.base_ref }} --depth=1
+          git diff origin/${{ github.base_ref }}...HEAD > diff.txt || echo "" > diff.txt
 
       - name: Install deps
         run: pip install requests

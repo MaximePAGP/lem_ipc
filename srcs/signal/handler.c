@@ -1,9 +1,11 @@
+#include "ipc.h"
+
 #include <signal.h>
 #include <stddef.h>
 
 static  void    handle_signal(int signum) {
     (void)signum;
-    // Handle the signal (e.g., clean up resources, log, etc.)
+    g_has_running = false;
 }
 
 

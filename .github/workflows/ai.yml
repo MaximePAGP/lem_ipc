@@ -1,0 +1,32 @@
+name: AI Review
+
+on:
+  pull_request:
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+
+      - name: Checkout AI reviewer
+        uses: actions/checkout@v3
+        with:
+          repository: MaximePAGP/review_agent
+          path: ai
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Get diff
+        run: |
+          git fetch origin main
+          git diff origin/main > diff.txt
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Run AI review
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python ai/reviewer.py

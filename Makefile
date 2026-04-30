@@ -1,12 +1,15 @@
 NAME			= lemipc
 
 
+PARSING_SRCS	= 	./srcs/parsing/handler.c \
+
 SIGNAL_SRCS		= 	./srcs/signal/handler.c \
 
 
 CC				= cc
 
-SRCS			= 	${SIGNAL_SRCS} \
+SRCS			= 	${PARSING_SRCS} \
+					${SIGNAL_SRCS} \
 					./srcs/main.c
 
 OBJS_DIR		= .objs

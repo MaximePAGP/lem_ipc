@@ -1,16 +1,24 @@
 NAME			= lemipc
 
+DIR_SRCS		= ./srcs
 
-PARSING_SRCS	= 	./srcs/parsing/handler.c \
 
-SIGNAL_SRCS		= 	./srcs/signal/handler.c \
+IPC_SRCS		= 	${DIR_SRCS}/ipc/init.c \
+					${DIR_SRCS}/ipc/clean.c \
+					${DIR_SRCS}/ipc/semaphore.c \
+					${DIR_SRCS}/ipc/player_count.c \
+
+PARSING_SRCS	= 	${DIR_SRCS}/parsing/handler.c \
+
+SIGNAL_SRCS		= 	${DIR_SRCS}/signal/handler.c \
 
 
 CC				= cc
 
-SRCS			= 	${PARSING_SRCS} \
+SRCS			= 	${IPC_SRCS} \
+					${PARSING_SRCS} \
 					${SIGNAL_SRCS} \
-					./srcs/main.c
+					${DIR_SRCS}/main.c
 
 OBJS_DIR		= .objs
 

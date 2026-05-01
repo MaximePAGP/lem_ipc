@@ -11,11 +11,11 @@ static  void    cleanup_on_error(t_ipc *ipc, bool is_first) {
         shmdt(ipc->map);
     if (!is_first)
         return ;
-    if (!ipc->shm_id)
+    if (ipc->shm_id != -1)
         shmctl(ipc->shm_id, IPC_RMID, NULL);
-    if (!ipc->sem_id)
+    if (ipc->sem_id != -1)
         semctl(ipc->sem_id, 0, IPC_RMID);
-    if (!ipc->msg_id)
+    if (ipc->msg_id != -1)
         msgctl(ipc->msg_id, IPC_RMID, NULL);
 }
 
@@ -46,14 +46,16 @@ void init_ipc(t_ipc *ipc) {
         }
 
         memset(ipc->map, 0, sizeof(t_map));
-        ipc->map->player_count++;
+        sem_lock(ipc->sem_id);
+        ipc->map->player_count ++;
+        sem_unlock(ipc->sem_id);
 
     } else {
         ipc->shm_id = shmget(ipc->shm_key, sizeof(t_map), 0666);
         ipc->sem_id = semget(ipc->sem_key, 1, 0666);
         ipc->msg_id = msgget(ipc->msg_key, 0666);
 
-        if (!ipc->shm_id || !ipc->sem_id || !ipc->msg_id) {
+        if (ipc->shm_id == -1 || ipc->sem_id == -1 || ipc->msg_id == -1) {
             perror("Failed to get IPC resources");
             cleanup_on_error(ipc, false);
             exit(EXIT_FAILURE);

@@ -29,18 +29,10 @@ typedef struct s_map {
 }   t_map;
 
 
-
-typedef enum e_teams {
-    TEAM_RED,
-    TEAM_BLUE,
-    TEAM_GREEN,
-    TEAM_YELLOW
-}   e_teams;
-
 typedef struct  s_player {
     size_t  x;
     size_t  y;
-    e_teams team;
+    size_t  team;
     pid_t   pid;
 }   t_player;
 

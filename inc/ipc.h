@@ -23,19 +23,9 @@
     #endif
 
 
-    #ifndef MAX_PLAYERS
-        #define MAX_PLAYERS 4
-    #endif
-
-
-    #ifndef MAX_TEAMS
-        #define MAX_TEAMS 4
-    #endif
-
-
-
 typedef struct s_map {
     size_t cells[MAP_HEIGHT][MAP_WIDTH];
+    size_t player_count;
 }   t_map;
 
 

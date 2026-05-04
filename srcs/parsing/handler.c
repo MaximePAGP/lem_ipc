@@ -1,4 +1,4 @@
-
+#include "../inc/ipc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +9,7 @@
 
 static  void    display_usage(void) {
     const char *usage_msg = "Usage: ./lem_ipc <team_id>\n";
-    const char *team_id_description = "<team_id> must be an integer between 0 and 25\n";
+    const char *team_id_description = "<team_id> must be an integer between 0 and 150"; // Need to match qith TEAM_LIMIT
 
     write(STDERR_FILENO, usage_msg, strlen(usage_msg));
     write(STDERR_FILENO, team_id_description, strlen(team_id_description));
@@ -18,7 +18,7 @@ static  void    display_usage(void) {
 static bool is_valid_team_id(const char *team_id) {
     int id = atoi(team_id);
 
-    return (id >= 0 && id <= 25);
+    return (id >= 0 && id <= TEAM_LIMIT);
 }
 
 void    handle_args(int argc, char **argv) {

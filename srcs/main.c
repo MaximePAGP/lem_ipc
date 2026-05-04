@@ -20,6 +20,7 @@ static void set_ipc_defaults(t_ipc *ipc) {
     ipc->map = NULL;
 }
 
+
 int main(int argc, char **argv) {
     t_ipc   ipc = {0};
 

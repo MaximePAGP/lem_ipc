@@ -12,6 +12,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+    #ifndef PLAYER_LIMIT
+        #define PLAYER_LIMIT 10
+    #endif
+
     #ifndef TEAM_LIMIT
         #define TEAM_LIMIT 150
     #endif
@@ -27,7 +31,7 @@
 
 
 typedef struct s_map {
-    size_t cells[MAP_HEIGHT][MAP_WIDTH];
+    size_t cells[MAP_WIDTH][MAP_HEIGHT];
     size_t player_count;
 }   t_map;
 
@@ -35,26 +39,29 @@ typedef struct s_map {
 typedef struct  s_player {
     size_t  x;
     size_t  y;
-    size_t  team;
+    size_t  team_id;
+    size_t  index;
     pid_t   pid;
 }   t_player;
 
+
 typedef struct  s_teams {
-    t_player *teams[TEAM_LIMIT];
+    size_t player_ids[PLAYER_LIMIT];
+    size_t count;
 }   t_teams;
 
 
 
-
 typedef struct  s_ipc {
-    key_t   shm_key;
-    key_t   sem_key;
-    key_t   msg_key;
-    int     shm_id;
-    int     sem_id;
-    int     msg_id;
-    t_map   *map;
-    t_teams *teams;
+    key_t       shm_key;
+    key_t       sem_key;
+    key_t       msg_key;
+    int         shm_id;
+    int         sem_id;
+    int         msg_id;
+    t_map       map;
+    t_teams     teams[TEAM_LIMIT];
+    t_player    players[250];
 }   t_ipc;
 
 

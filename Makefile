@@ -2,7 +2,10 @@ NAME			=	lemipc
 
 DIR_SRCS		=	./srcs
 
+DEBUG_SRCS		= 	${DIR_SRCS}/debug/display_map.c \
+
 GAME_SRCS		= 	${DIR_SRCS}/game/mouvement.c \
+					${DIR_SRCS}/game/spawn.c \
 
 IPC_SRCS		= 	${DIR_SRCS}/ipc/init.c \
 					${DIR_SRCS}/ipc/clean.c \
@@ -16,7 +19,8 @@ SIGNAL_SRCS		= 	${DIR_SRCS}/signal/handler.c \
 
 CC				= 	cc
 
-SRCS			=   ${GAME_SRCS} \
+SRCS			=   ${DEBUG_SRCS} \
+					${GAME_SRCS} \
 					${IPC_SRCS} \
 					${PARSING_SRCS} \
 					${SIGNAL_SRCS} \

@@ -1,7 +1,8 @@
-NAME			= lemipc
+NAME			=	lemipc
 
-DIR_SRCS		= ./srcs
+DIR_SRCS		=	./srcs
 
+GAME_SRCS		= 	${DIR_SRCS}/game/mouvement.c \
 
 IPC_SRCS		= 	${DIR_SRCS}/ipc/init.c \
 					${DIR_SRCS}/ipc/clean.c \
@@ -13,20 +14,21 @@ PARSING_SRCS	= 	${DIR_SRCS}/parsing/handler.c \
 SIGNAL_SRCS		= 	${DIR_SRCS}/signal/handler.c \
 
 
-CC				= cc
+CC				= 	cc
 
-SRCS			= 	${IPC_SRCS} \
+SRCS			=   ${GAME_SRCS} \
+					${IPC_SRCS} \
 					${PARSING_SRCS} \
 					${SIGNAL_SRCS} \
 					${DIR_SRCS}/main.c
 
-OBJS_DIR		= .objs
+OBJS_DIR		=	.objs
 
 OBJS			=	${SRCS:%.c=$(OBJS_DIR)/%.o}
 
 DEPS			= 	${OBJS:.o=.d}
 
-CFLAGS			= -Wall -Wextra -Werror -MMD -MP -I ./inc
+CFLAGS			=	-Wall -Wextra -Werror -MMD -MP -I ./inc
 
 $(OBJS_DIR)/%.o: %.c Makefile
 			@mkdir -p $(dir $@)

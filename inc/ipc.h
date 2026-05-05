@@ -12,6 +12,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+    #ifndef PLAYER_MAX_LIMIT
+        #define PLAYER_MAX_LIMIT 150
+    #endif
+
     #ifndef PLAYER_LIMIT
         #define PLAYER_LIMIT 10
     #endif
@@ -59,9 +63,9 @@ typedef struct  s_ipc {
     int         shm_id;
     int         sem_id;
     int         msg_id;
-    t_map       map;
+    t_map       *map;
     t_teams     teams[TEAM_LIMIT];
-    t_player    players[250];
+    t_player    players[PLAYER_MAX_LIMIT];
 }   t_ipc;
 
 

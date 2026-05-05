@@ -8,6 +8,7 @@ bool    g_has_running = true;
 void    init_signals(void);
 void    handle_args(int argc, char **argv);
 void    init_ipc(t_ipc *ipc);
+void    assign_team(t_ipc *ipc, t_player *player, int team_id);
 void    find_player_spawn(t_ipc *ipc, t_player *player);
 void    clean_ipc(t_ipc *ipc);
 void    display_map(t_ipc *ipc);
@@ -31,7 +32,7 @@ int main(int argc, char **argv) {
     init_signals();
     handle_args(argc, argv);
     init_ipc(&ipc);
-    assign_team();
+    assign_team(&ipc, &player, atoi(argv[1]));
     find_player_spawn(&ipc, &player);
     display_map(&ipc);
     while (g_has_running) {

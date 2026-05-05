@@ -9,7 +9,7 @@
 
 static  void    display_usage(void) {
     const char *usage_msg = "Usage: ./lem_ipc <team_id>\n";
-    const char *team_id_description = "<team_id> must be an integer between 0 and 150"; // Need to match qith TEAM_LIMIT
+    const char *team_id_description = "<team_id> must be an integer between 0 and 150\n";
 
     write(STDERR_FILENO, usage_msg, strlen(usage_msg));
     write(STDERR_FILENO, team_id_description, strlen(team_id_description));

@@ -1,5 +1,4 @@
 #include "../inc/ipc.h"
-
 #include <string.h>
 
 void    sem_lock(int sem_id);
@@ -7,8 +6,11 @@ void    sem_unlock(int sem_id);
 void    increment_player_count(t_ipc *ipc);
 
 static  void    cleanup_on_error(t_ipc *ipc, bool is_first) {
-    if (ipc->map && ipc->map != (void *)-1)
+    if (ipc->map && ipc->map != (void *)-1) {
         shmdt(ipc->map);
+        ipc->map = NULL;
+    }
+
     if (!is_first)
         return ;
     if (ipc->shm_id != -1)
@@ -19,10 +21,15 @@ static  void    cleanup_on_error(t_ipc *ipc, bool is_first) {
         msgctl(ipc->msg_id, IPC_RMID, NULL);
 }
 
-void init_ipc(t_ipc *ipc) {
+void    init_ipc(t_ipc *ipc) {
     ipc->shm_key = ftok("/tmp", 'S');
     ipc->sem_key = ftok("/tmp", 'M');
     ipc->msg_key = ftok("/tmp", 'Q');
+
+    if (ipc->shm_key == -1 || ipc->sem_key == -1 || ipc->msg_key == -1) {
+        perror("ftok");
+        exit(EXIT_FAILURE);
+    }
 
     ipc->shm_id = shmget(ipc->shm_key, sizeof(t_map), IPC_CREAT | IPC_EXCL | 0666);
 
@@ -36,20 +43,24 @@ void init_ipc(t_ipc *ipc) {
             exit(EXIT_FAILURE);
         }
 
-        semctl(ipc->sem_id, 0, SETVAL, 1);
-
-        ipc->map = shmat(ipc->shm_id, NULL, 0);
-        if (ipc->map == (void *)-1) {
-            perror("Failed to attach shared memory");
+        if (semctl(ipc->sem_id, 0, SETVAL, 1) == -1) {
+            perror("semctl SETVAL");
             cleanup_on_error(ipc, true);
             exit(EXIT_FAILURE);
         }
 
-        memset(ipc->map, 0, sizeof(t_map));
-        sem_lock(ipc->sem_id);
-        ipc->map->player_count ++;
-        sem_unlock(ipc->sem_id);
+        ipc->map = shmat(ipc->shm_id, NULL, 0);
+        if (ipc->map == (void *)-1) {
+            perror("Failed to attach shared memory");
+            ipc->map = NULL;
+            cleanup_on_error(ipc, true);
+            exit(EXIT_FAILURE);
+        }
 
+        sem_lock(ipc->sem_id);
+        memset(ipc->map, 0, sizeof(t_map));
+        ipc->map->player_count = 1;
+        sem_unlock(ipc->sem_id);
     } else {
         ipc->shm_id = shmget(ipc->shm_key, sizeof(t_map), 0666);
         ipc->sem_id = semget(ipc->sem_key, 1, 0666);
@@ -64,6 +75,7 @@ void init_ipc(t_ipc *ipc) {
         ipc->map = shmat(ipc->shm_id, NULL, 0);
         if (ipc->map == (void *)-1) {
             perror("Failed to attach shared memory");
+            ipc->map = NULL;
             cleanup_on_error(ipc, false);
             exit(EXIT_FAILURE);
         }

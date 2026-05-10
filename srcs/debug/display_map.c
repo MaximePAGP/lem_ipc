@@ -37,6 +37,8 @@ void display_map(t_ipc *ipc) {
 
     t_map *map = ipc->map;
 
+    printf("\033[H\033[J");
+    printf("My pid is %zu\n", trim_pid(getpid()));
     for (size_t y = 0; y < MAP_HEIGHT; y++) {
         for (size_t x = 0; x < MAP_WIDTH; x++)
             printf("+-------");
@@ -50,10 +52,10 @@ void display_map(t_ipc *ipc) {
                 
                 if (player) {
                     printf("|  ");
-                    apply_color(player->team_id, cell);
+                    apply_color(player->team_id, trim_pid(cell));
                     printf("  ");
                 } else
-                    printf("| %zu ", cell);
+                    printf("| %zu ", trim_pid(cell));
             } else
                 printf("|   %zu   ", cell);
         }
@@ -62,7 +64,8 @@ void display_map(t_ipc *ipc) {
 
     for (size_t x = 0; x < MAP_WIDTH; x++)
         printf("+-------");
-    printf("+\n");
+    printf("+\n\n");
 
     sem_unlock(ipc->sem_id);
+    sleep(1);
 }

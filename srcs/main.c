@@ -8,10 +8,10 @@ bool    g_has_running = true;
 void    init_signals(void);
 void    handle_args(int argc, char **argv);
 void    init_ipc(t_ipc *ipc);
-void    assign_team(t_ipc *ipc, t_player *player, int team_id);
-void    find_player_spawn(t_ipc *ipc, t_player *player);
-void    clean_ipc(t_ipc *ipc);
+void    add_player(t_ipc *ipc, int team_id);
 void    display_map(t_ipc *ipc);
+void    remove_player(t_ipc *ipc, pid_t pid);
+void    clean_ipc(t_ipc *ipc);
 
 static void set_ipc_defaults(t_ipc *ipc) {
     ipc->shm_key = -1;
@@ -26,18 +26,16 @@ static void set_ipc_defaults(t_ipc *ipc) {
 
 int main(int argc, char **argv) {
     t_ipc       ipc = {0};
-    t_player    player = {0};
 
     set_ipc_defaults(&ipc);
     init_signals();
     handle_args(argc, argv);
     init_ipc(&ipc);
-    assign_team(&ipc, &player, atoi(argv[1]));
-    find_player_spawn(&ipc, &player);
-    display_map(&ipc);
+    add_player(&ipc, atoi(argv[1]));
     while (g_has_running) {
-
+        display_map(&ipc);
     }
+    remove_player(&ipc, getpid());
     clean_ipc(&ipc);
     return (EXIT_SUCCESS);
 }

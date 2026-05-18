@@ -35,7 +35,7 @@
 
 
 typedef struct s_map {
-    size_t cells[MAP_WIDTH][MAP_HEIGHT];
+    size_t cells[MAP_HEIGHT][MAP_WIDTH];
     size_t player_count;
 }   t_map;
 

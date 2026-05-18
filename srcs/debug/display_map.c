@@ -17,6 +17,7 @@ static void apply_color(size_t team_id, size_t pid) {
 
 static int find_player_index(t_ipc *ipc, pid_t pid) {
     for (size_t i = 0; i < PLAYER_MAX_LIMIT; i++) {
+        printf("check slot %zu: pid=%u\n", i, ipc->players[i].pid);
         if (ipc->players[i].pid == pid)
             return (i);
     }
@@ -49,13 +50,13 @@ void display_map(t_ipc *ipc) {
 
             if (cell != 0) {
                 t_player *player = find_player(ipc, (pid_t)cell);
-                
+                printf("cell %zu ", cell);
                 if (player) {
                     printf("|  ");
                     apply_color(player->team_id, trim_pid(cell));
                     printf("  ");
                 } else
-                    printf("| %zu ", trim_pid(cell));
+                    printf("|a %zu ", trim_pid(cell));
             } else
                 printf("|   %zu   ", cell);
         }

@@ -25,7 +25,7 @@ static void set_ipc_defaults(t_ipc *ipc) {
 
 
 int main(int argc, char **argv) {
-    t_ipc       ipc = {0};
+    t_ipc   ipc = {0};
 
     set_ipc_defaults(&ipc);
     init_signals();

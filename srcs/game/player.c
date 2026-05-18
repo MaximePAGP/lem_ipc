@@ -58,8 +58,11 @@ static bool find_spawn(t_ipc *ipc, size_t *out_x, size_t *out_y) {
 
 static int find_free_slot(t_ipc *ipc) {
     for (size_t i = 0; i < PLAYER_MAX_LIMIT; i++) {
-        if (ipc->players[i].pid == 0)
+        if (ipc->players[i].pid == 0) {
+            printf("free slot check %zu: pid=%u\n", i, ipc->players[i].pid);
+
             return (i);
+        }
     }
     return (-1);
 }
@@ -135,7 +138,7 @@ void    remove_player(t_ipc *ipc, pid_t pid) {
     for (size_t i = 0; i < team->count; i++) {
         if (team->player_ids[i] == (size_t)index) {
             team->player_ids[i] = team->player_ids[team->count - 1];
-            team->count--;
+            team->count --;
             break ;
         }
     }

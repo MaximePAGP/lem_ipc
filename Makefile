@@ -7,6 +7,7 @@ DEBUG_SRCS		= 	${DIR_SRCS}/debug/display_map.c \
 GAME_SRCS		= 	${DIR_SRCS}/game/player.c \
 					${DIR_SRCS}/game/mouvement.c \
 					${DIR_SRCS}/game/spawn.c \
+					${DIR_SRCS}/game/logic.c \
 
 IPC_SRCS		= 	${DIR_SRCS}/ipc/init.c \
 					${DIR_SRCS}/ipc/clean.c \

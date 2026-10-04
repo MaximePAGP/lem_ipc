@@ -23,7 +23,6 @@ static void set_ipc_defaults(t_ipc *ipc) {
 }
 
 
-
 int main(int argc, char **argv) {
     t_ipc   ipc = {0};
     int     team_id;

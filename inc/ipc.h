@@ -34,12 +34,6 @@
     #endif
 
 
-typedef struct s_map {
-    size_t cells[MAP_HEIGHT][MAP_WIDTH];
-    size_t player_count;
-}   t_map;
-
-
 typedef struct  s_player {
     size_t  x;
     size_t  y;
@@ -55,6 +49,14 @@ typedef struct  s_teams {
 }   t_teams;
 
 
+typedef struct s_map {
+    size_t      cells[MAP_HEIGHT][MAP_WIDTH];
+    size_t      player_count;
+    t_teams     teams[TEAM_LIMIT];
+    t_player    players[PLAYER_MAX_LIMIT];
+}   t_map;
+
+
 
 typedef struct  s_ipc {
     key_t       shm_key;
@@ -64,8 +66,6 @@ typedef struct  s_ipc {
     int         sem_id;
     int         msg_id;
     t_map       *map;
-    t_teams     teams[TEAM_LIMIT];
-    t_player    players[PLAYER_MAX_LIMIT];
 }   t_ipc;
 
 

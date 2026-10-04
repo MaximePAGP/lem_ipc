@@ -5,8 +5,8 @@ void    sem_unlock(int sem_id);
 
 
 static int  find_player_index_unsafe(t_ipc *ipc, pid_t pid) {
-    for (size_t i = 0; i < PLAYER_LIMIT; i++) {
-        if (ipc->players[i].pid == pid)
+    for (size_t i = 0; i < PLAYER_MAX_LIMIT; i++) {
+        if (ipc->map->players[i].pid == pid)
             return (i);
     }
     return (-1);
@@ -28,14 +28,14 @@ t_player    *get_player_ptr(t_ipc *ipc, pid_t pid) {
 
     if (index == -1)
         return (NULL);
-    return (&ipc->players[index]);
+    return (&ipc->map->players[index]);
 }
 
 
 static bool is_player_limit_reached(t_ipc *ipc) {
     size_t count = 0;
     for (size_t i = 0; i < PLAYER_MAX_LIMIT; i++) {
-        if (ipc->players[i].pid != 0)
+        if (ipc->map->players[i].pid != 0)
             count++;
     }
     return count >= PLAYER_MAX_LIMIT;
@@ -58,8 +58,8 @@ static bool find_spawn(t_ipc *ipc, size_t *out_x, size_t *out_y) {
 
 static int find_free_slot(t_ipc *ipc) {
     for (size_t i = 0; i < PLAYER_MAX_LIMIT; i++) {
-        if (ipc->players[i].pid == 0) {
-            printf("free slot check %zu: pid=%u\n", i, ipc->players[i].pid);
+        if (ipc->map->players[i].pid == 0) {
+            printf("free slot check %zu: pid=%u\n", i, ipc->map->players[i].pid);
 
             return (i);
         }
@@ -82,7 +82,7 @@ void    add_player(t_ipc *ipc, int team_id) {
         return ;
     }
 
-    t_teams *team = &ipc->teams[team_id];
+    t_teams *team = &ipc->map->teams[team_id];
     if (team->count >= PLAYER_LIMIT) {
         sem_unlock(ipc->sem_id);
         g_has_running = false;
@@ -104,11 +104,11 @@ void    add_player(t_ipc *ipc, int team_id) {
         return ;
     }
 
-    ipc->players[slot].pid     = getpid();
-    ipc->players[slot].team_id = team_id;
-    ipc->players[slot].index   = slot;
-    ipc->players[slot].x       = x;
-    ipc->players[slot].y       = y;
+    ipc->map->players[slot].pid     = getpid();
+    ipc->map->players[slot].team_id = team_id;
+    ipc->map->players[slot].index   = slot;
+    ipc->map->players[slot].x       = x;
+    ipc->map->players[slot].y       = y;
 
     ipc->map->cells[y][x]           = getpid();
     team->player_ids[team->count++] = slot;
@@ -127,13 +127,13 @@ void    remove_player(t_ipc *ipc, pid_t pid) {
         return ;
     }
 
-    size_t px = ipc->players[index].x;
-    size_t py = ipc->players[index].y;
+    size_t px = ipc->map->players[index].x;
+    size_t py = ipc->map->players[index].y;
     if (px < MAP_WIDTH && py < MAP_HEIGHT)
         ipc->map->cells[py][px] = 0;
 
-    size_t  team_id = ipc->players[index].team_id;
-    t_teams *team   = &ipc->teams[team_id];
+    size_t  team_id = ipc->map->players[index].team_id;
+    t_teams *team   = &ipc->map->teams[team_id];
 
     for (size_t i = 0; i < team->count; i++) {
         if (team->player_ids[i] == (size_t)index) {
@@ -143,7 +143,7 @@ void    remove_player(t_ipc *ipc, pid_t pid) {
         }
     }
 
-    ipc->players[index].pid = 0;
+    ipc->map->players[index].pid = 0;
 
     sem_unlock(ipc->sem_id);
 }

@@ -9,28 +9,14 @@ static size_t trim_pid(size_t pid) {
     return (pid % 1000);
 }
 
-static void apply_color(size_t team_id, size_t pid) {
-    size_t color = (16 + (team_id % 216));
+static void apply_color(int team_id) {
+    int color = (16 + (team_id % 216));
 
-    printf("\x1b[38;5;%zum%3zu\x1b[0m", color, trim_pid(pid));
+    printf("\x1b[38;5;%dm%3d\x1b[0m", color, team_id);
 }
 
-static int find_player_index(t_ipc *ipc, pid_t pid) {
-    for (size_t i = 0; i < PLAYER_MAX_LIMIT; i++) {
-        printf("check slot %zu: pid=%u\n", i, ipc->map->players[i].pid);
-        if (ipc->map->players[i].pid == pid)
-            return (i);
-    }
-    return (-1);
-}
-
-static t_player *find_player(t_ipc *ipc, pid_t pid) {
-    int index = find_player_index(ipc, pid);
-
-    if (index == -1)
-        return (NULL);
-
-    return (&ipc->map->players[index]);
+static bool is_me(t_ipc *ipc, size_t x, size_t y) {
+    return (ipc->player.pid != 0 && ipc->player.x == x && ipc->player.y == y);
 }
 
 void display_map(t_ipc *ipc) {
@@ -39,26 +25,21 @@ void display_map(t_ipc *ipc) {
     t_map *map = ipc->map;
 
     printf("\033[H\033[J");
-    printf("My pid is %zu\n", trim_pid(getpid()));
+    printf("My pid is %zu, team %d\n", trim_pid(getpid()), ipc->player.team_id);
     for (size_t y = 0; y < MAP_HEIGHT; y++) {
         for (size_t x = 0; x < MAP_WIDTH; x++)
             printf("+-------");
         printf("+\n");
 
         for (size_t x = 0; x < MAP_WIDTH; x++) {
-            size_t cell = map->cells[y][x];
+            int cell = map->cells[y][x];
 
-            if (cell != 0) {
-                t_player *player = find_player(ipc, (pid_t)cell);
-                printf("cell %zu ", cell);
-                if (player) {
-                    printf("|  ");
-                    apply_color(player->team_id, trim_pid(cell));
-                    printf("  ");
-                } else
-                    printf("|a %zu ", trim_pid(cell));
+            if (cell != EMPTY_CELL) {
+                printf("| %c", is_me(ipc, x, y) ? '*' : ' ');
+                apply_color(cell);
+                printf("  ");
             } else
-                printf("|   %zu   ", cell);
+                printf("|       ");
         }
         printf("|\n");
     }

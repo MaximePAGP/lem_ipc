@@ -18,8 +18,6 @@ static  void    display_usage(void) {
 
 
 static bool is_only_digits(const char *str) {
-    if (!*str || strlen(str) > 9)
-        return (false);
     for (size_t i = 0; str[i]; i++) {
         if (!isdigit(str[i]))
             return (false);
@@ -36,7 +34,7 @@ int handle_args(int argc, char **argv) {
     int team_id = is_only_digits(argv[1]) ? atoi(argv[1]) : -1;
 
     if (team_id < 1 || team_id > TEAM_LIMIT) {
-        const char *error_msg = "Error: Invalid team_id, \n";
+        const char *error_msg = "Error: Invalid team_id\n";
         write(STDERR_FILENO, error_msg, strlen(error_msg));
         display_usage();
         exit(EXIT_FAILURE);

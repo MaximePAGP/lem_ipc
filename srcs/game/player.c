@@ -27,11 +27,6 @@ static bool find_spawn(t_ipc *ipc, size_t *out_x, size_t *out_y) {
 
 
 void    add_player(t_ipc *ipc, int team_id) {
-    if (team_id < 1 || team_id > TEAM_LIMIT) {
-        g_has_running = false;
-        return ;
-    }
-
     sem_lock(ipc->sem_id);
 
     if (is_player_limit_reached(ipc)) {

@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 
-bool    g_has_running = true;
+volatile sig_atomic_t   G_IS_RUNNING = 1;
 
 
 void    init_signals(void);

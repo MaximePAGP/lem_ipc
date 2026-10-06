@@ -31,10 +31,23 @@ int handle_args(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    int team_id = is_only_digits(argv[1]) ? atoi(argv[1]) : -1;
+    const char *error_msg = "Error: Invalid team_id\n";
 
+    if (!is_only_digits(argv[1])) {
+        write(STDERR_FILENO, error_msg, strlen(error_msg));
+        display_usage();
+        exit(EXIT_FAILURE);
+    }
+    
+    if (strlen(argv[1]) > 3) {
+        write(STDERR_FILENO, error_msg, strlen(error_msg));
+        display_usage();
+        exit(EXIT_FAILURE);
+    }
+
+    int team_id = atoi(argv[1]);
+    
     if (team_id < 1 || team_id > TEAM_LIMIT) {
-        const char *error_msg = "Error: Invalid team_id\n";
         write(STDERR_FILENO, error_msg, strlen(error_msg));
         display_usage();
         exit(EXIT_FAILURE);

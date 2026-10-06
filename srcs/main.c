@@ -28,8 +28,8 @@ int main(int argc, char **argv) {
     int     team_id;
 
     set_ipc_defaults(&ipc);
-    init_signals();
     team_id = handle_args(argc, argv);
+    init_signals();
     init_ipc(&ipc);
     add_player(&ipc, team_id);
    while (G_IS_RUNNING) { 

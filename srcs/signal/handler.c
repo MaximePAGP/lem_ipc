@@ -5,7 +5,7 @@
 
 static  void    handle_signal(int signum) {
     (void)signum;
-    g_has_running = false;
+    G_IS_RUNNING = 0;
 }
 
 

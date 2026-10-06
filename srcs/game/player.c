@@ -31,13 +31,13 @@ void    add_player(t_ipc *ipc, int team_id) {
 
     if (is_player_limit_reached(ipc)) {
         sem_unlock(ipc->sem_id);
-        g_has_running = false;
+        G_IS_RUNNING = 0;
         return ;
     }
 
     if (ipc->map->team_counts[team_id] >= PLAYER_LIMIT) {
         sem_unlock(ipc->sem_id);
-        g_has_running = false;
+        G_IS_RUNNING = 0;
         return ;
     }
 
@@ -45,7 +45,7 @@ void    add_player(t_ipc *ipc, int team_id) {
     size_t  y;
     if (!find_spawn(ipc, &x, &y)) {
         sem_unlock(ipc->sem_id);
-        g_has_running = false;
+        G_IS_RUNNING = 0;
         return ;
     }
 

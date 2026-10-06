@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <signal.h>
 
     #ifndef PLAYER_MAX_LIMIT
         #define PLAYER_MAX_LIMIT 150
@@ -71,6 +72,6 @@ typedef struct  s_msg {
     char    mtext[128];
 }   t_msg;
 
-extern  bool g_has_running;
+extern volatile sig_atomic_t G_IS_RUNNING;
 
 #endif

@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
     team_id = handle_args(argc, argv);
     init_ipc(&ipc);
     add_player(&ipc, team_id);
-    while (g_has_running) {
+   while (G_IS_RUNNING) { 
         display_map(&ipc);
     }
     remove_player(&ipc);

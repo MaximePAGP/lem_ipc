@@ -3,6 +3,7 @@ NAME			=	lemipc
 DIR_SRCS		=	./srcs
 
 UTILS_SRCS		= 	${DIR_SRCS}/utils/error_system.c \
+					${DIR_SRCS}/utils/semaphore.c \
 
 DEBUG_SRCS		= 	${DIR_SRCS}/debug/display_map.c \
 
@@ -13,7 +14,6 @@ GAME_SRCS		= 	${DIR_SRCS}/game/player.c \
 
 IPC_SRCS		= 	${DIR_SRCS}/ipc/init.c \
 					${DIR_SRCS}/ipc/clean.c \
-					${DIR_SRCS}/ipc/semaphore.c \
 					${DIR_SRCS}/ipc/player_count.c \
 
 PARSING_SRCS	= 	${DIR_SRCS}/parsing/handler.c \

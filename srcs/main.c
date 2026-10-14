@@ -32,8 +32,8 @@ int main(int argc, char **argv) {
     init_signals();
     init_ipc(&ipc);
     add_player(&ipc, team_id);
-   while (G_IS_RUNNING) { 
-        display_map(&ipc);
+    while (G_IS_RUNNING) { 
+        // display_map(&ipc);
     }
     remove_player(&ipc);
     clean_ipc(&ipc);

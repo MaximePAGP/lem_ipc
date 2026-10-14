@@ -3,9 +3,6 @@
 #include <errno.h>
 #include <string.h>
 
-void    sem_lock(int sem_id);
-void    sem_unlock(int sem_id);
-
 
 static  void    catch_error(t_ipc *ipc, const char *src, bool is_creator) {
     print_error_system(src);

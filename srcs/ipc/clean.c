@@ -1,9 +1,5 @@
 #include "../inc/ipc.h"
-
-
-void    sem_lock(int sem_id);
-void    sem_unlock(int sem_id);
-
+#include "../inc/utils.h"
 
 void    clean_ipc(t_ipc *ipc) {
     bool    is_last;

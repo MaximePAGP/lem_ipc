@@ -1,7 +1,5 @@
 #include "../../inc/ipc.h"
-
-void    sem_lock(int sem_id);
-void    sem_unlock(int sem_id);
+#include "../inc/utils.h"
 
 
 static bool is_player_limit_reached(t_ipc *ipc) {
@@ -43,6 +41,7 @@ void    add_player(t_ipc *ipc, int team_id) {
 
     size_t  x;
     size_t  y;
+
     if (!find_spawn(ipc, &x, &y)) {
         sem_unlock(ipc->sem_id);
         G_IS_RUNNING = 0;

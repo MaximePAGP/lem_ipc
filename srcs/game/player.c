@@ -1,6 +1,10 @@
 #include "../../inc/ipc.h"
 #include "../inc/utils.h"
+#include <string.h>
 
+static void print_msg(int fd, const char *msg) {
+    write(fd, msg, strlen(msg));
+}
 
 static bool has_limit_players_reached(t_ipc *ipc) {
     size_t count = 0;
@@ -30,12 +34,14 @@ void    add_player(t_ipc *ipc, int team_id) {
     if (has_limit_players_reached(ipc)) {
         sem_unlock(ipc->sem_id);
         G_IS_RUNNING = 0;
+        print_msg(STDOUT_FILENO, "Maximum player limit reached. Cannot add more players.\n");
         return ;
     }
 
     if (ipc->s_map->teams[team_id] >= PLAYER_LIMIT) {
         sem_unlock(ipc->sem_id);
         G_IS_RUNNING = 0;
+        print_msg(STDOUT_FILENO, "Player limit reached for this team.\n");
         return ;
     }
 
@@ -45,6 +51,7 @@ void    add_player(t_ipc *ipc, int team_id) {
     if (!find_spawn(ipc, &x, &y)) {
         sem_unlock(ipc->sem_id);
         G_IS_RUNNING = 0;
+        print_msg(STDOUT_FILENO, "No available spawn position.\n");
         return ;
     }
 

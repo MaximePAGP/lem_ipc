@@ -22,7 +22,7 @@ static bool is_me(t_ipc *ipc, size_t x, size_t y) {
 void display_map(t_ipc *ipc) {
     sem_lock(ipc->sem_id);
 
-    t_map *map = ipc->map;
+    t_map *map = ipc->s_map;
 
     printf("\033[H\033[J");
     printf("My pid is %zu, team %d\n", trim_pid(getpid()), ipc->player.team_id);

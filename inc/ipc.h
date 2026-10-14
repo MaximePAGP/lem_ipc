@@ -49,8 +49,8 @@ typedef struct  s_player {
 
 typedef struct s_map {
     int         cells[MAP_HEIGHT][MAP_WIDTH];
-    size_t      player_count;
-    size_t      team_counts[TEAM_LIMIT + 1];
+    size_t      total_player;
+    size_t      teams[TEAM_LIMIT + 1];
 }   t_map;
 
 
@@ -62,7 +62,7 @@ typedef struct  s_ipc {
     int         shm_id;
     int         sem_id;
     int         msg_id;
-    t_map       *map;
+    t_map       *s_map;
     t_player    player;
 }   t_ipc;
 

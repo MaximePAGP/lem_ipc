@@ -2,10 +2,10 @@
 #include "../inc/utils.h"
 
 
-static bool is_player_limit_reached(t_ipc *ipc) {
+static bool has_limit_players_reached(t_ipc *ipc) {
     size_t count = 0;
     for (size_t i = 1; i <= TEAM_LIMIT; i++)
-        count += ipc->map->team_counts[i];
+        count += ipc->s_map->teams[i];
     return count >= PLAYER_MAX_LIMIT;
 }
 
@@ -13,7 +13,7 @@ static bool is_player_limit_reached(t_ipc *ipc) {
 static bool find_spawn(t_ipc *ipc, size_t *out_x, size_t *out_y) {
     for (size_t y = 0; y < MAP_HEIGHT; y++) {
         for (size_t x = 0; x < MAP_WIDTH; x++) {
-            if (ipc->map->cells[y][x] == EMPTY_CELL) {
+            if (ipc->s_map->cells[y][x] == EMPTY_CELL) {
                 *out_x = x;
                 *out_y = y;
                 return (true);
@@ -27,13 +27,13 @@ static bool find_spawn(t_ipc *ipc, size_t *out_x, size_t *out_y) {
 void    add_player(t_ipc *ipc, int team_id) {
     sem_lock(ipc->sem_id);
 
-    if (is_player_limit_reached(ipc)) {
+    if (has_limit_players_reached(ipc)) {
         sem_unlock(ipc->sem_id);
         G_IS_RUNNING = 0;
         return ;
     }
 
-    if (ipc->map->team_counts[team_id] >= PLAYER_LIMIT) {
+    if (ipc->s_map->teams[team_id] >= PLAYER_LIMIT) {
         sem_unlock(ipc->sem_id);
         G_IS_RUNNING = 0;
         return ;
@@ -53,8 +53,8 @@ void    add_player(t_ipc *ipc, int team_id) {
     ipc->player.x       = x;
     ipc->player.y       = y;
 
-    ipc->map->cells[y][x] = team_id;
-    ipc->map->team_counts[team_id]++;
+    ipc->s_map->cells[y][x] = team_id;
+    ipc->s_map->teams[team_id]++;
 
     sem_unlock(ipc->sem_id);
 }
@@ -70,10 +70,10 @@ void    remove_player(t_ipc *ipc) {
     sem_lock(ipc->sem_id);
 
     if (player->x < MAP_WIDTH && player->y < MAP_HEIGHT)
-        ipc->map->cells[player->y][player->x] = EMPTY_CELL;
+        ipc->s_map->cells[player->y][player->x] = EMPTY_CELL;
 
-    if (ipc->map->team_counts[player->team_id] > 0)
-        ipc->map->team_counts[player->team_id]--;
+    if (ipc->s_map->teams[player->team_id] > 0)
+        ipc->s_map->teams[player->team_id]--;
 
     player->pid = 0;
 

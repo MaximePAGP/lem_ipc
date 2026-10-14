@@ -7,9 +7,9 @@
 static  void    catch_error(t_ipc *ipc, const char *src, bool is_creator) {
     print_error_system(src);
 
-    if (ipc->map) {
-        shmdt(ipc->map);
-        ipc->map = NULL;
+    if (ipc->s_map) {
+        shmdt(ipc->s_map);
+        ipc->s_map = NULL;
     }
 
     if (is_creator) {
@@ -35,13 +35,13 @@ static  void    create_ipc(t_ipc *ipc) {
     if (ipc->msg_id == -1)
         catch_error(ipc, "init.c: msgget", true);
 
-    ipc->map = shmat(ipc->shm_id, NULL, 0);
-    if (ipc->map == (void *)-1) {
-        ipc->map = NULL;
+    ipc->s_map = shmat(ipc->shm_id, NULL, 0);
+    if (ipc->s_map == (void *)-1) {
+        ipc->s_map = NULL;
         catch_error(ipc, "init.c: shmat", true);
     }
 
-    ipc->map->player_count = 1;
+    ipc->s_map->total_player = 1;
 
     if (semctl(ipc->sem_id, 0, SETVAL, 1) == -1)
         catch_error(ipc, "init.c: semctl SETVAL", true);
@@ -62,13 +62,13 @@ static  void    join_ipc(t_ipc *ipc) {
     if (ipc->msg_id == -1)
         catch_error(ipc, "init.c: msgget", false);
 
-    ipc->map = shmat(ipc->shm_id, NULL, 0);
-    if (ipc->map == (void *)-1) {
-        ipc->map = NULL;
+    ipc->s_map = shmat(ipc->shm_id, NULL, 0);
+    if (ipc->s_map == (void *)-1) {
+        ipc->s_map = NULL;
         catch_error(ipc, "init.c: shmat", false);
     }
 
-    ipc->map->player_count++;
+    ipc->s_map->total_player++;
     sem_unlock(ipc->sem_id);
 }
 

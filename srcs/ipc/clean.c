@@ -5,10 +5,10 @@ void    clean_ipc(t_ipc *ipc) {
     bool    is_last;
 
     sem_lock(ipc->sem_id);
-    ipc->map->player_count --;
-    is_last = (ipc->map->player_count == 0);
-    shmdt(ipc->map);
-    ipc->map = NULL;
+    ipc->s_map->total_player --;
+    is_last = (ipc->s_map->total_player == 0);
+    shmdt(ipc->s_map);
+    ipc->s_map = NULL;
 
     if (!is_last) {
         sem_unlock(ipc->sem_id);

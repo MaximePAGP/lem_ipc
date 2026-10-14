@@ -1,3 +1,4 @@
+#include "../inc/utils.h"
 #include <sys/sem.h>
 #include <errno.h>
 #include <unistd.h>
@@ -10,8 +11,7 @@ static void    sem_op(int sem_id, short int delta) {
 
     while (semop(sem_id, &op, 1) == -1) {
         if (errno != EINTR) {
-            const char *msg = "semop failed\n";
-            write(STDERR_FILENO, msg, strlen(msg));
+            print_error_system("semaphore.c: semop");
             exit(EXIT_FAILURE);
         }
     }

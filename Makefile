@@ -2,6 +2,8 @@ NAME			=	lemipc
 
 DIR_SRCS		=	./srcs
 
+UTILS_SRCS		= 	${DIR_SRCS}/utils/error_system.c \
+
 DEBUG_SRCS		= 	${DIR_SRCS}/debug/display_map.c \
 
 GAME_SRCS		= 	${DIR_SRCS}/game/player.c \
@@ -26,6 +28,7 @@ SRCS			=   ${DEBUG_SRCS} \
 					${IPC_SRCS} \
 					${PARSING_SRCS} \
 					${SIGNAL_SRCS} \
+					${UTILS_SRCS} \
 					${DIR_SRCS}/main.c
 
 OBJS_DIR		=	.objs

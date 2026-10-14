@@ -1,4 +1,5 @@
 #include "../inc/ipc.h"
+#include "../inc/utils.h"
 #include <errno.h>
 #include <string.h>
 
@@ -6,8 +7,8 @@ void    sem_lock(int sem_id);
 void    sem_unlock(int sem_id);
 
 
-static  void    catch_error(t_ipc *ipc, const char *err_msg, bool is_creator) {
-    write(STDERR_FILENO, err_msg, strlen(err_msg));
+static  void    catch_error(t_ipc *ipc, const char *src, bool is_creator) {
+    print_error_system(src);
 
     if (ipc->map) {
         shmdt(ipc->map);
@@ -31,43 +32,43 @@ static  void    catch_error(t_ipc *ipc, const char *err_msg, bool is_creator) {
 static  void    create_ipc(t_ipc *ipc) {
     ipc->shm_id = shmget(ipc->shm_key, sizeof(t_map), IPC_CREAT | IPC_EXCL | 0666);
     if (ipc->shm_id == -1)
-        catch_error(ipc, "shmget\n", true);
+        catch_error(ipc, "init.c: shmget", true);
 
     ipc->msg_id = msgget(ipc->msg_key, IPC_CREAT | IPC_EXCL | 0666);
     if (ipc->msg_id == -1)
-        catch_error(ipc, "msgget\n", true);
+        catch_error(ipc, "init.c: msgget", true);
 
     ipc->map = shmat(ipc->shm_id, NULL, 0);
     if (ipc->map == (void *)-1) {
         ipc->map = NULL;
-        catch_error(ipc, "shmat\n", true);
+        catch_error(ipc, "init.c: shmat", true);
     }
 
     ipc->map->player_count = 1;
 
     if (semctl(ipc->sem_id, 0, SETVAL, 1) == -1)
-        catch_error(ipc, "semctl SETVAL\n", true);
+        catch_error(ipc, "init.c: semctl SETVAL", true);
 }
 
 static  void    join_ipc(t_ipc *ipc) {
     ipc->sem_id = semget(ipc->sem_key, 1, 0666);
     if (ipc->sem_id == -1)
-        catch_error(ipc, "semget\n", false);
+        catch_error(ipc, "init.c: semget", false);
 
     sem_lock(ipc->sem_id);
 
     ipc->shm_id = shmget(ipc->shm_key, sizeof(t_map), 0666);
     if (ipc->shm_id == -1)
-        catch_error(ipc, "shmget\n", false);
+        catch_error(ipc, "init.c: shmget", false);
 
     ipc->msg_id = msgget(ipc->msg_key, 0666);
     if (ipc->msg_id == -1)
-        catch_error(ipc, "msgget\n", false);
+        catch_error(ipc, "init.c: msgget", false);
 
     ipc->map = shmat(ipc->shm_id, NULL, 0);
     if (ipc->map == (void *)-1) {
         ipc->map = NULL;
-        catch_error(ipc, "shmat\n", false);
+        catch_error(ipc, "init.c: shmat", false);
     }
 
     ipc->map->player_count++;
@@ -80,12 +81,12 @@ void    init_ipc(t_ipc *ipc) {
     ipc->msg_key = ftok("/tmp", 'Q');
 
     if (ipc->shm_key == -1 || ipc->sem_key == -1 || ipc->msg_key == -1)
-        catch_error(ipc, "ftok\n", false);
+        catch_error(ipc, "init.c: ftok", false);
 
     ipc->sem_id = semget(ipc->sem_key, 1, IPC_CREAT | IPC_EXCL | 0666);
 
     if (ipc->sem_id == -1 && errno != EEXIST)
-        catch_error(ipc, "semget\n", false);
+        catch_error(ipc, "init.c: semget", false);
 
     if (ipc->sem_id != -1)
         create_ipc(ipc);

@@ -1,5 +1,6 @@
 #include "ipc.h"
 #include "game_logic.h"
+#include "player.h"
 
 #include <stdlib.h>
 
@@ -9,9 +10,7 @@ volatile sig_atomic_t   G_IS_RUNNING = 1;
 void    init_signals(void);
 int     handle_args(int argc, char **argv);
 void    init_ipc(t_ipc *ipc);
-void    add_player(t_ipc *ipc, int team_id);
 void    display_map(t_ipc *ipc);
-void    remove_player(t_ipc *ipc);
 void    clean_ipc(t_ipc *ipc);
 
 static void set_ipc_defaults(t_ipc *ipc) {
@@ -32,11 +31,11 @@ int main(int argc, char **argv) {
     team_id = handle_args(argc, argv);
     init_signals();
     init_ipc(&ipc);
-    add_player(&ipc, team_id);
+    if (!add_player_safe(&ipc, team_id)) return (EXIT_FAILURE);
     while (G_IS_RUNNING) { 
         // display_map(&ipc);
     }
-    remove_player(&ipc);
+    remove_player_safe(&ipc);
     clean_ipc(&ipc);
     return (EXIT_SUCCESS);
 }

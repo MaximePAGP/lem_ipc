@@ -51,6 +51,8 @@ typedef struct s_map {
     int         cells[MAP_HEIGHT][MAP_WIDTH];
     size_t      total_player;
     size_t      teams[TEAM_LIMIT + 1];
+    bool        is_game_over;
+    bool        is_game_started;
 }   t_map;
 
 

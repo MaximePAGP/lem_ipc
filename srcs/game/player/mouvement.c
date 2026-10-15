@@ -1,9 +1,8 @@
-#include "../inc/ipc.h"
+#include "../../../inc/ipc.h"
+#include "../../../inc/game_logic.h"
+#include "../../../inc/utils.h"
 
-void    sem_lock(int sem_id);
-void    sem_unlock(int sem_id);
-
-static bool is_valid_move(int x, int y) {
+static bool is_valid_cell(int x, int y) {
     return (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT);
 }
 
@@ -11,13 +10,13 @@ static  bool is_cell_empty(t_ipc *ipc, int x, int y) {
     return (ipc->s_map->cells[y][x] == EMPTY_CELL);
 }
 
-static void move_player(t_ipc *ipc, t_player *player, int dx, int dy) {
+static void move_player_safe(t_ipc *ipc, t_player *player, int dx, int dy) {
     sem_lock(ipc->sem_id);
 
     int new_x = (int)player->x + dx;
     int new_y = (int)player->y + dy;
 
-    if (!is_valid_move(new_x, new_y) || !is_cell_empty(ipc, new_x, new_y)) {
+    if (!is_valid_cell(new_x, new_y) || !is_cell_empty(ipc, new_x, new_y)) {
         sem_unlock(ipc->sem_id);
         return ;
     }
@@ -33,17 +32,17 @@ static void move_player(t_ipc *ipc, t_player *player, int dx, int dy) {
 }
 
 void    move_up(t_ipc *ipc, t_player *player) {
-    move_player(ipc, player, 0, -1);
+    move_player_safe(ipc, player, 0, -1);
 }
 
 void    move_down(t_ipc *ipc, t_player *player) {
-    move_player(ipc, player, 0, 1);
+    move_player_safe(ipc, player, 0, 1);
 }
 
 void    move_left(t_ipc *ipc, t_player *player) {
-    move_player(ipc, player, -1, 0);
+    move_player_safe(ipc, player, -1, 0);
 }
 
 void    move_right(t_ipc *ipc, t_player *player) {
-    move_player(ipc, player, 1, 0);
+    move_player_safe(ipc, player, 1, 0);
 }

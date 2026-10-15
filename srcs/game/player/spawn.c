@@ -1,5 +1,6 @@
-#include "../../inc/ipc.h"
-#include "../inc/utils.h"
+#include "../../../inc/ipc.h"
+#include "../../../inc/game_logic.h"
+#include "../../../inc/utils.h"
 #include <string.h>
 
 static void print_msg(int fd, const char *msg) {

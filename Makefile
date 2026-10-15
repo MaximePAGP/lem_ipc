@@ -1,43 +1,53 @@
-NAME			=	lemipc
+NAME				=	lemipc
 
-DIR_SRCS		=	./srcs
+DIR_SRCS			=	./srcs
 
-UTILS_SRCS		= 	${DIR_SRCS}/utils/error_system.c \
-					${DIR_SRCS}/utils/semaphore.c \
+DIR_GAME_SRCS		=	${DIR_SRCS}/game
 
-DEBUG_SRCS		= 	${DIR_SRCS}/debug/display_map.c \
-
-GAME_SRCS		= 	${DIR_SRCS}/game/player.c \
-					${DIR_SRCS}/game/mouvement.c \
-					${DIR_SRCS}/game/spawn.c \
-					${DIR_SRCS}/game/logic.c \
-
-IPC_SRCS		= 	${DIR_SRCS}/ipc/init.c \
-					${DIR_SRCS}/ipc/clean.c \
-					${DIR_SRCS}/ipc/player_count.c \
-
-PARSING_SRCS	= 	${DIR_SRCS}/parsing/handler.c \
-
-SIGNAL_SRCS		= 	${DIR_SRCS}/signal/handler.c \
+DIR_PLAYER_SRCS		=	${DIR_GAME_SRCS}/player
 
 
-CC				= 	cc
 
-SRCS			=   ${DEBUG_SRCS} \
-					${GAME_SRCS} \
-					${IPC_SRCS} \
-					${PARSING_SRCS} \
-					${SIGNAL_SRCS} \
-					${UTILS_SRCS} \
-					${DIR_SRCS}/main.c
 
-OBJS_DIR		=	.objs
+UTILS_SRCS			= 	${DIR_SRCS}/utils/error_system.c \
+						${DIR_SRCS}/utils/semaphore.c \
 
-OBJS			=	${SRCS:%.c=$(OBJS_DIR)/%.o}
+DEBUG_SRCS			= 	${DIR_SRCS}/debug/display_map.c \
 
-DEPS			= 	${OBJS:.o=.d}
+GAME_PLAYER_SRCS	= 	${DIR_PLAYER_SRCS}/mouvement.c \
+						${DIR_PLAYER_SRCS}/spawn.c \
 
-CFLAGS			=	-Wall -Wextra -Werror -MMD -MP -I ./inc
+GAME_LOGIC_SRCS		= 	${DIR_GAME_SRCS}/logic.c \
+
+
+
+IPC_SRCS			= 	${DIR_SRCS}/ipc/init.c \
+						${DIR_SRCS}/ipc/clean.c \
+						${DIR_SRCS}/ipc/player_count.c \
+
+PARSING_SRCS		= 	${DIR_SRCS}/parsing/handler.c \
+
+SIGNAL_SRCS			= 	${DIR_SRCS}/signal/handler.c \
+
+
+CC					= 	cc
+
+SRCS				=   ${DEBUG_SRCS} \
+						${GAME_LOGIC_SRCS} \
+						${GAME_PLAYER_SRCS} \
+						${IPC_SRCS} \
+						${PARSING_SRCS} \
+						${SIGNAL_SRCS} \
+						${UTILS_SRCS} \
+						${DIR_SRCS}/main.c \
+
+OBJS_DIR			=	.objs
+
+OBJS				=	${SRCS:%.c=$(OBJS_DIR)/%.o}
+
+DEPS				= 	${OBJS:.o=.d}
+
+CFLAGS				=	-Wall -Wextra -Werror -MMD -MP -I ./inc
 
 $(OBJS_DIR)/%.o: %.c Makefile
 			@mkdir -p $(dir $@)

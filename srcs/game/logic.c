@@ -1,11 +1,6 @@
-#include "../inc/ipc.h"
-
-
-void    sem_lock(int sem_id);
-void    sem_unlock(int sem_id);
-
-
-
+#include "../../inc/ipc.h"
+#include "../../inc/game_logic.h"
+#include "../../inc/utils.h"
 
 // void    i_am_dead(t_ipc *ipc, t_player *player) {
 

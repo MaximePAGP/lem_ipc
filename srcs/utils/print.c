@@ -13,3 +13,8 @@ void    print_error_system(const char *src) {
     write(STDERR_FILENO, msg, strlen(msg));
     write(STDERR_FILENO, "\n", 1);
 }
+
+void    print_msg(int fd, const char *msg) {
+    if (!msg) return;
+    write(fd, msg, strlen(msg));
+}

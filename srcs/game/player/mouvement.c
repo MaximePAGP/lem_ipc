@@ -1,5 +1,5 @@
 #include "../../../inc/ipc.h"
-#include "../../../inc/game_logic.h"
+#include "../../../inc/player.h"
 #include "../../../inc/utils.h"
 
 static bool is_valid_cell(int x, int y) {

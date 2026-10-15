@@ -1,18 +1,13 @@
 #include "../../../inc/ipc.h"
-#include "../../../inc/game_logic.h"
+#include "../../../inc/player.h"
 #include "../../../inc/utils.h"
 #include <string.h>
 
-static void print_msg(int fd, const char *msg) {
-    write(fd, msg, strlen(msg));
-}
 
-static bool has_limit_players_reached(t_ipc *ipc) {
-    size_t count = 0;
-    for (size_t i = 1; i <= TEAM_LIMIT; i++)
-        count += ipc->s_map->teams[i];
-    return count >= PLAYER_MAX_LIMIT;
-}
+
+// static  bool    is_cell_safe() {
+
+// }
 
 
 static bool find_spawn(t_ipc *ipc, size_t *out_x, size_t *out_y) {
@@ -32,17 +27,9 @@ static bool find_spawn(t_ipc *ipc, size_t *out_x, size_t *out_y) {
 void    add_player(t_ipc *ipc, int team_id) {
     sem_lock(ipc->sem_id);
 
-    if (has_limit_players_reached(ipc)) {
+    if (!can_add_player_unsafe(ipc, team_id)) {
         sem_unlock(ipc->sem_id);
         G_IS_RUNNING = 0;
-        print_msg(STDOUT_FILENO, "Maximum player limit reached. Cannot add more players.\n");
-        return ;
-    }
-
-    if (ipc->s_map->teams[team_id] >= PLAYER_LIMIT) {
-        sem_unlock(ipc->sem_id);
-        G_IS_RUNNING = 0;
-        print_msg(STDOUT_FILENO, "Player limit reached for this team.\n");
         return ;
     }
 

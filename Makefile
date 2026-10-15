@@ -9,13 +9,14 @@ DIR_PLAYER_SRCS		=	${DIR_GAME_SRCS}/player
 
 
 
-UTILS_SRCS			= 	${DIR_SRCS}/utils/error_system.c \
+UTILS_SRCS			= 	${DIR_SRCS}/utils/print.c \
 						${DIR_SRCS}/utils/semaphore.c \
 
 DEBUG_SRCS			= 	${DIR_SRCS}/debug/display_map.c \
 
 GAME_PLAYER_SRCS	= 	${DIR_PLAYER_SRCS}/mouvement.c \
 						${DIR_PLAYER_SRCS}/spawn.c \
+						${DIR_PLAYER_SRCS}/limit.c \
 
 GAME_LOGIC_SRCS		= 	${DIR_GAME_SRCS}/logic.c \
 

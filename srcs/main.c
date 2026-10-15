@@ -1,4 +1,5 @@
 #include "ipc.h"
+#include "game_logic.h"
 
 #include <stdlib.h>
 

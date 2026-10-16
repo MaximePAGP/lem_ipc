@@ -1,71 +1,94 @@
 #include "../inc/ipc.h"
-
+#include "../inc/utils.h"
+#include <errno.h>
 #include <string.h>
 
-void    sem_lock(int sem_id);
-void    sem_unlock(int sem_id);
-void    increment_player_count(t_ipc *ipc);
 
-static  void    cleanup_on_error(t_ipc *ipc, bool is_first) {
-    if (ipc->map && ipc->map != (void *)-1)
-        shmdt(ipc->map);
-    if (!is_first)
-        return ;
-    if (!ipc->shm_id)
-        shmctl(ipc->shm_id, IPC_RMID, NULL);
-    if (!ipc->sem_id)
-        semctl(ipc->sem_id, 0, IPC_RMID);
-    if (!ipc->msg_id)
-        msgctl(ipc->msg_id, IPC_RMID, NULL);
+static  void    catch_error(t_ipc *ipc, const char *src, bool is_creator) {
+    print_error_system(src);
+
+    if (ipc->s_map) {
+        shmdt(ipc->s_map);
+        ipc->s_map = NULL;
+    }
+
+    if (is_creator) {
+        if (ipc->shm_id != -1)
+            shmctl(ipc->shm_id, IPC_RMID, NULL);
+        if (ipc->msg_id != -1)
+            msgctl(ipc->msg_id, IPC_RMID, NULL);
+        if (ipc->sem_id != -1)
+            semctl(ipc->sem_id, 0, IPC_RMID);
+    } else if (ipc->sem_id != -1)
+        sem_unlock(ipc->sem_id);
+
+    exit(EXIT_FAILURE);
 }
 
-void init_ipc(t_ipc *ipc) {
+
+static  void    create_ipc(t_ipc *ipc) {
+    ipc->shm_id = shmget(ipc->shm_key, sizeof(t_map), IPC_CREAT | IPC_EXCL | 0666);
+    if (ipc->shm_id == -1)
+        catch_error(ipc, "init.c: shmget", true);
+
+    ipc->msg_id = msgget(ipc->msg_key, IPC_CREAT | IPC_EXCL | 0666);
+    if (ipc->msg_id == -1)
+        catch_error(ipc, "init.c: msgget", true);
+
+    ipc->s_map = shmat(ipc->shm_id, NULL, 0);
+    if (ipc->s_map == (void *)-1) {
+        ipc->s_map = NULL;
+        catch_error(ipc, "init.c: shmat", true);
+    }
+
+    ipc->s_map->total_player = 1;
+    ipc->s_map->is_game_over = false;
+    ipc->s_map->is_game_started = false;
+
+    if (semctl(ipc->sem_id, 0, SETVAL, 1) == -1)
+        catch_error(ipc, "init.c: semctl SETVAL", true);
+}
+
+static  void    join_ipc(t_ipc *ipc) {
+    ipc->sem_id = semget(ipc->sem_key, 1, 0666);
+    if (ipc->sem_id == -1)
+        catch_error(ipc, "init.c: semget", false);
+
+    sem_lock(ipc->sem_id);
+
+    ipc->shm_id = shmget(ipc->shm_key, sizeof(t_map), 0666);
+    if (ipc->shm_id == -1)
+        catch_error(ipc, "init.c: shmget", false);
+
+    ipc->msg_id = msgget(ipc->msg_key, 0666);
+    if (ipc->msg_id == -1)
+        catch_error(ipc, "init.c: msgget", false);
+
+    ipc->s_map = shmat(ipc->shm_id, NULL, 0);
+    if (ipc->s_map == (void *)-1) {
+        ipc->s_map = NULL;
+        catch_error(ipc, "init.c: shmat", false);
+    }
+
+    ipc->s_map->total_player++;
+    sem_unlock(ipc->sem_id);
+}
+
+void    init_ipc(t_ipc *ipc) {
     ipc->shm_key = ftok("/tmp", 'S');
     ipc->sem_key = ftok("/tmp", 'M');
     ipc->msg_key = ftok("/tmp", 'Q');
 
-    ipc->shm_id = shmget(ipc->shm_key, sizeof(t_map), IPC_CREAT | IPC_EXCL | 0666);
+    if (ipc->shm_key == -1 || ipc->sem_key == -1 || ipc->msg_key == -1)
+        catch_error(ipc, "init.c: ftok", false);
 
-    if (ipc->shm_id != -1) {
-        ipc->sem_id = semget(ipc->sem_key, 1, IPC_CREAT | IPC_EXCL | 0666);
-        ipc->msg_id = msgget(ipc->msg_key, IPC_CREAT | IPC_EXCL | 0666);
+    ipc->sem_id = semget(ipc->sem_key, 1, IPC_CREAT | IPC_EXCL | 0666);
 
-        if (ipc->sem_id == -1 || ipc->msg_id == -1) {
-            perror("Failed to create IPC resources");
-            cleanup_on_error(ipc, true);
-            exit(EXIT_FAILURE);
-        }
+    if (ipc->sem_id == -1 && errno != EEXIST)
+        catch_error(ipc, "init.c: semget", false);
 
-        semctl(ipc->sem_id, 0, SETVAL, 1);
-
-        ipc->map = shmat(ipc->shm_id, NULL, 0);
-        if (ipc->map == (void *)-1) {
-            perror("Failed to attach shared memory");
-            cleanup_on_error(ipc, true);
-            exit(EXIT_FAILURE);
-        }
-
-        memset(ipc->map, 0, sizeof(t_map));
-        ipc->map->player_count++;
-
-    } else {
-        ipc->shm_id = shmget(ipc->shm_key, sizeof(t_map), 0666);
-        ipc->sem_id = semget(ipc->sem_key, 1, 0666);
-        ipc->msg_id = msgget(ipc->msg_key, 0666);
-
-        if (!ipc->shm_id || !ipc->sem_id || !ipc->msg_id) {
-            perror("Failed to get IPC resources");
-            cleanup_on_error(ipc, false);
-            exit(EXIT_FAILURE);
-        }
-
-        ipc->map = shmat(ipc->shm_id, NULL, 0);
-        if (ipc->map == (void *)-1) {
-            perror("Failed to attach shared memory");
-            cleanup_on_error(ipc, false);
-            exit(EXIT_FAILURE);
-        }
-
-        increment_player_count(ipc);
-    }
+    if (ipc->sem_id != -1)
+        create_ipc(ipc);
+    else if (errno == EEXIST)
+        join_ipc(ipc);
 }

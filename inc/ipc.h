@@ -11,48 +11,61 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <signal.h>
 
+    #ifndef PLAYER_MAX_LIMIT
+        #define PLAYER_MAX_LIMIT 150
+    #endif
+
+    #ifndef PLAYER_LIMIT
+        #define PLAYER_LIMIT 10
+    #endif
+
+    #ifndef TEAM_LIMIT
+        #define TEAM_LIMIT 150
+    #endif
 
     #ifndef MAP_WIDTH
-        #define MAP_WIDTH 9
+        #define MAP_WIDTH 25
     #endif
 
 
     #ifndef MAP_HEIGHT
-        #define MAP_HEIGHT 9
+        #define MAP_HEIGHT 25
     #endif
 
 
-typedef struct s_map {
-    size_t cells[MAP_HEIGHT][MAP_WIDTH];
-    size_t player_count;
-}   t_map;
+    #define EMPTY_CELL 0
 
-
-
-typedef enum e_teams {
-    TEAM_RED,
-    TEAM_BLUE,
-    TEAM_GREEN,
-    TEAM_YELLOW
-}   e_teams;
 
 typedef struct  s_player {
     size_t  x;
     size_t  y;
-    e_teams team;
+    int     team_id;
     pid_t   pid;
 }   t_player;
 
 
+
+typedef struct s_map {
+    int         cells[MAP_HEIGHT][MAP_WIDTH];
+    size_t      total_player;
+    size_t      teams[TEAM_LIMIT + 1];
+    bool        is_game_over;
+    bool        is_game_started;
+}   t_map;
+
+
+
 typedef struct  s_ipc {
-    key_t   shm_key;
-    key_t   sem_key;
-    key_t   msg_key;
-    int     shm_id;
-    int     sem_id;
-    int     msg_id;
-    t_map   *map;
+    key_t       shm_key;
+    key_t       sem_key;
+    key_t       msg_key;
+    int         shm_id;
+    int         sem_id;
+    int         msg_id;
+    t_map       *s_map;
+    t_player    player;
 }   t_ipc;
 
 
@@ -61,6 +74,6 @@ typedef struct  s_msg {
     char    mtext[128];
 }   t_msg;
 
-extern  bool g_has_running;
+extern volatile sig_atomic_t G_IS_RUNNING;
 
 #endif

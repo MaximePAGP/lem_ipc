@@ -1,25 +1,21 @@
 #include "../inc/ipc.h"
+#include "../inc/utils.h"
 
+void    clean_ipc(t_ipc *ipc) {
+    bool    is_last;
 
-void    sem_lock(int sem_id);
-void    sem_unlock(int sem_id);
-
-
-void clean_ipc(t_ipc *ipc) {
     sem_lock(ipc->sem_id);
+    ipc->s_map->total_player --;
+    is_last = (ipc->s_map->total_player == 0);
+    shmdt(ipc->s_map);
+    ipc->s_map = NULL;
 
-    ipc->map->player_count --;
-    
-    int is_last = (ipc->map->player_count == 0);
-
-   shmdt(ipc->map);
-
-    sem_unlock(ipc->sem_id);
     if (!is_last) {
+        sem_unlock(ipc->sem_id);
         return;
     }
 
     shmctl(ipc->shm_id, IPC_RMID, NULL);
-    semctl(ipc->sem_id, 0, IPC_RMID);
     msgctl(ipc->msg_id, IPC_RMID, NULL);
+    semctl(ipc->sem_id, 0, IPC_RMID);
 }

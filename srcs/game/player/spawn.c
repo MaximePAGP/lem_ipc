@@ -5,15 +5,32 @@
 
 
 
-// static  bool    is_cell_safe() {
+/*
+ @details Check from an square shape if the current cell has any empty cell around it. If all the cells are occupied, then the player is considered surrounded. It does not matter about the team
+*/
+static  bool    is_surrounded(t_ipc *ipc, size_t x, size_t y) {
+    for (size_t h = 0; h < 3; h++) {
+        for (size_t w = 0; w < 3; w++) {
+            size_t  check_x = (x + w - 1);
+            size_t  check_y = (y + h - 1);
 
-// }
+            if (check_x >= MAP_WIDTH || check_y >= MAP_HEIGHT)
+                continue ;
+
+            if (ipc->s_map->cells[check_y][check_x] != EMPTY_CELL)
+                return (true);
+        }
+    }
+    return (false);
+}
+
+
 
 
 static bool find_spawn_unsafe(t_ipc *ipc, size_t *out_x, size_t *out_y) {
     for (size_t y = 0; y < MAP_HEIGHT; y++) {
         for (size_t x = 0; x < MAP_WIDTH; x++) {
-            if (ipc->s_map->cells[y][x] == EMPTY_CELL) {
+            if (!is_surrounded(ipc, x, y) && ipc->s_map->cells[y][x] == EMPTY_CELL) {
                 *out_x = x;
                 *out_y = y;
                 return (true);
@@ -27,7 +44,7 @@ static bool find_spawn_unsafe(t_ipc *ipc, size_t *out_x, size_t *out_y) {
 bool    add_player_safe(t_ipc *ipc, int team_id) {
     sem_lock(ipc->sem_id);
 
-    if (!can_add_player_unsafe(ipc, team_id)) {
+    if (!is_limit_reached_unsafe(ipc, team_id)) {
         sem_unlock(ipc->sem_id);
         G_IS_RUNNING = 0;
         return (false);

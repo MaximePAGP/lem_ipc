@@ -22,7 +22,7 @@ static bool     is_team_full_unsafe(const t_map *map, int team_id) {
 }
 
 
-bool    can_add_player_unsafe(t_ipc *ipc, int team_id) {
+bool    is_limit_reached_unsafe(t_ipc *ipc, int team_id) {
     if (is_board_full_unsafe(ipc->s_map)) {
         print_msg(STDOUT_FILENO, "Maximum player limit reached. Cannot add more players.\n");
         return (false);

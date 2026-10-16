@@ -31,9 +31,12 @@ int main(int argc, char **argv) {
     team_id = handle_args(argc, argv);
     init_signals();
     init_ipc(&ipc);
-    if (!add_player_safe(&ipc, team_id)) return (EXIT_FAILURE);
+    if (!add_player_safe(&ipc, team_id)) {
+        clean_ipc(&ipc);
+        return (EXIT_FAILURE);
+    }
     while (G_IS_RUNNING) { 
-        // display_map(&ipc);
+        display_map(&ipc);
     }
     remove_player_safe(&ipc);
     clean_ipc(&ipc);

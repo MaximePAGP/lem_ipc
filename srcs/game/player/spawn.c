@@ -56,7 +56,7 @@ bool    add_player_safe(t_ipc *ipc, int team_id) {
     if (!find_spawn_unsafe(ipc, &x, &y)) {
         sem_unlock(ipc->sem_id);
         G_IS_RUNNING = 0;
-        print_msg(STDOUT_FILENO, "No available spawn position.\n");
+        print_msg(STDERR_FILENO, "No available spawn position.\n");
         return (false);
     }
 

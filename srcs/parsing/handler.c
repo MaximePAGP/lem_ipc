@@ -19,7 +19,7 @@ static  void    display_usage(void) {
 
 static bool is_only_digits(const char *str) {
     for (size_t i = 0; str[i]; i++) {
-        if (!isdigit(str[i]))
+        if (!isdigit((unsigned char) str[i]))
             return (false);
     }
     return (true);

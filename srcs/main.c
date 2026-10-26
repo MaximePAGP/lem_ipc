@@ -1,6 +1,7 @@
 #include "ipc.h"
 #include "game_logic.h"
 #include "player.h"
+#include "utils.h"
 
 #include <stdlib.h>
 
@@ -30,6 +31,7 @@ int main(int argc, char **argv) {
     set_ipc_defaults(&ipc);
     team_id = handle_args(argc, argv);
     init_signals();
+    init_random();
     init_ipc(&ipc);
     if (!add_player_safe(&ipc, team_id)) {
         clean_ipc(&ipc);

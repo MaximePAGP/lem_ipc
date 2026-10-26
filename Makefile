@@ -11,6 +11,7 @@ DIR_PLAYER_SRCS		=	${DIR_GAME_SRCS}/player
 
 UTILS_SRCS			= 	${DIR_SRCS}/utils/print.c \
 						${DIR_SRCS}/utils/semaphore.c \
+						${DIR_SRCS}/utils/random.c \
 
 DEBUG_SRCS			= 	${DIR_SRCS}/debug/display_map.c \
 

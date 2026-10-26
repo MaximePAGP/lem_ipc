@@ -27,10 +27,32 @@ static  bool    has_neighbor(t_ipc *ipc, size_t x, size_t y) {
 
 
 
-static bool find_spawn_unsafe(t_ipc *ipc, size_t *out_x, size_t *out_y) {
+static size_t  count_spawns_unsafe(t_ipc *ipc) {
+    size_t  count = 0;
+
     for (size_t y = 0; y < MAP_HEIGHT; y++) {
         for (size_t x = 0; x < MAP_WIDTH; x++) {
-            if (!has_neighbor(ipc, x, y) && ipc->s_map->cells[y][x] == EMPTY_CELL) {
+            if (!has_neighbor(ipc, x, y))
+                count ++;
+        }
+    }
+    return (count);
+}
+
+
+static bool find_spawn_unsafe(t_ipc *ipc, size_t *out_x, size_t *out_y) {
+    size_t  count = count_spawns_unsafe(ipc);
+
+    if (count == 0)
+        return (false);
+
+    size_t  k = random_range(count);
+
+    for (size_t y = 0; y < MAP_HEIGHT; y++) {
+        for (size_t x = 0; x < MAP_WIDTH; x++) {
+            if (has_neighbor(ipc, x, y))
+                continue ;
+            if (k -- == 0) {
                 *out_x = x;
                 *out_y = y;
                 return (true);

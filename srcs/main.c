@@ -37,7 +37,17 @@ int main(int argc, char **argv) {
         clean_ipc(&ipc);
         return (EXIT_FAILURE);
     }
-    while (G_IS_RUNNING) { 
+    ipc.s_map->cells[ipc.player.y][ipc.player.x] = 0;
+    ipc.player.x = 3;
+    ipc.player.y = 3;
+    ipc.s_map->cells[ipc.player.y][ipc.player.x] = ipc.player.team_id;
+    ipc.s_map->cells[ipc.player.y][ipc.player.x+1] = 3;
+    ipc.s_map->cells[ipc.player.y+1][ipc.player.x] = 3;
+    while (G_IS_RUNNING) {
+        if (is_dead_unsafe(&ipc, &ipc.player)) {
+            // should display message and quit properly
+            break;
+        }
         display_map(&ipc);
     }
     remove_player_safe(&ipc);

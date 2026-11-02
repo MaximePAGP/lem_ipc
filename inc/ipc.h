@@ -26,12 +26,12 @@
     #endif
 
     #ifndef MAP_WIDTH
-        #define MAP_WIDTH 25
+        #define MAP_WIDTH 9
     #endif
 
 
     #ifndef MAP_HEIGHT
-        #define MAP_HEIGHT 25
+        #define MAP_HEIGHT 9
     #endif
 
 

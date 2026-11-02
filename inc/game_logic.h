@@ -3,4 +3,6 @@
 
 #include "ipc.h"
 
+bool    is_dead_unsafe(t_ipc *ipc, t_player *player);
+
 #endif

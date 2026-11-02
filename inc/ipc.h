@@ -13,18 +13,6 @@
 #include <stdbool.h>
 #include <signal.h>
 
-    #ifndef PLAYER_MAX_LIMIT
-        #define PLAYER_MAX_LIMIT 150
-    #endif
-
-    #ifndef PLAYER_LIMIT
-        #define PLAYER_LIMIT 10
-    #endif
-
-    #ifndef TEAM_LIMIT
-        #define TEAM_LIMIT 150
-    #endif
-
     #ifndef MAP_WIDTH
         #define MAP_WIDTH 9
     #endif
@@ -49,8 +37,6 @@ typedef struct  s_player {
 
 typedef struct s_map {
     int         cells[MAP_HEIGHT][MAP_WIDTH];
-    size_t      total_player;
-    size_t      teams[TEAM_LIMIT + 1];
     bool        is_game_over;
     bool        is_game_started;
 }   t_map;

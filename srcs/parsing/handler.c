@@ -6,11 +6,13 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <errno.h>
+#include <limits.h>
 
 
 static  void    display_usage(void) {
     const char *usage_msg = "Usage: ./lem_ipc <team_id>\n";
-    const char *team_id_description = "<team_id> must be an integer between 1 and 150\n";
+    const char *team_id_description = "<team_id> must be an positive integer\n";
 
     write(STDERR_FILENO, usage_msg, strlen(usage_msg));
     write(STDERR_FILENO, team_id_description, strlen(team_id_description));
@@ -38,19 +40,19 @@ int handle_args(int argc, char **argv) {
         display_usage();
         exit(EXIT_FAILURE);
     }
-    
-    if (strlen(argv[1]) > 3) {
+
+    if (strlen(argv[1]) > 10) {
         write(STDERR_FILENO, error_msg, strlen(error_msg));
         display_usage();
         exit(EXIT_FAILURE);
     }
 
-    int team_id = atoi(argv[1]);
-    
-    if (team_id < 1 || team_id > TEAM_LIMIT) {
+    long team_id = strtol(argv[1], NULL, 10);
+
+    if (errno == ERANGE || team_id < 1 || team_id > INT_MAX) {
         write(STDERR_FILENO, error_msg, strlen(error_msg));
         display_usage();
         exit(EXIT_FAILURE);
     }
-    return (team_id);
+    return ((int)team_id);
 }

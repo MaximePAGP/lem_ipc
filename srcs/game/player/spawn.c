@@ -66,12 +66,6 @@ static bool find_spawn_unsafe(t_ipc *ipc, size_t *out_x, size_t *out_y) {
 bool    add_player_safe(t_ipc *ipc, int team_id) {
     sem_lock(ipc->sem_id);
 
-    if (!can_add_player_unsafe(ipc, team_id)) {
-        sem_unlock(ipc->sem_id);
-        G_IS_RUNNING = 0;
-        return (false);
-    }
-
     size_t  x;
     size_t  y;
 
@@ -88,7 +82,6 @@ bool    add_player_safe(t_ipc *ipc, int team_id) {
     ipc->player.y       = y;
 
     ipc->s_map->cells[y][x] = team_id;
-    ipc->s_map->teams[team_id]++;
 
     sem_unlock(ipc->sem_id);
     return (true);
@@ -107,10 +100,20 @@ void    remove_player_safe(t_ipc *ipc) {
     if (player->x < MAP_WIDTH && player->y < MAP_HEIGHT)
         ipc->s_map->cells[player->y][player->x] = EMPTY_CELL;
 
-    if (ipc->s_map->teams[player->team_id] > 0)
-        ipc->s_map->teams[player->team_id]--;
-
     player->pid = 0;
 
     sem_unlock(ipc->sem_id);
+}
+
+void    remove_player_unsafe(t_ipc *ipc) {
+    t_player *player = &ipc->player;
+
+    if (player->pid == 0)
+        return ;
+
+    if (player->x < MAP_WIDTH && player->y < MAP_HEIGHT)
+        ipc->s_map->cells[player->y][player->x] = EMPTY_CELL;
+
+    player->pid = 0;
+
 }

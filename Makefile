@@ -17,7 +17,6 @@ DEBUG_SRCS			= 	${DIR_SRCS}/debug/display_map.c \
 
 GAME_PLAYER_SRCS	= 	${DIR_PLAYER_SRCS}/mouvement.c \
 						${DIR_PLAYER_SRCS}/spawn.c \
-						${DIR_PLAYER_SRCS}/limit.c \
 
 GAME_LOGIC_SRCS		= 	${DIR_GAME_SRCS}/logic.c \
 
@@ -25,7 +24,6 @@ GAME_LOGIC_SRCS		= 	${DIR_GAME_SRCS}/logic.c \
 
 IPC_SRCS			= 	${DIR_SRCS}/ipc/init.c \
 						${DIR_SRCS}/ipc/clean.c \
-						${DIR_SRCS}/ipc/player_count.c \
 
 PARSING_SRCS		= 	${DIR_SRCS}/parsing/handler.c \
 

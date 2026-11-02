@@ -41,7 +41,6 @@ static  void    create_ipc(t_ipc *ipc) {
         catch_error(ipc, "init.c: shmat", true);
     }
 
-    ipc->s_map->total_player = 1;
     ipc->s_map->is_game_over = false;
     ipc->s_map->is_game_started = false;
 
@@ -70,7 +69,6 @@ static  void    join_ipc(t_ipc *ipc) {
         catch_error(ipc, "init.c: shmat", false);
     }
 
-    ipc->s_map->total_player++;
     sem_unlock(ipc->sem_id);
 }
 

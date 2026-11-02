@@ -2,11 +2,12 @@
 #include "../inc/utils.h"
 
 void    clean_ipc(t_ipc *ipc) {
-    bool    is_last;
+    struct shmid_ds info;
+    bool            is_last = false;
 
     sem_lock(ipc->sem_id);
-    ipc->s_map->total_player --;
-    is_last = (ipc->s_map->total_player == 0);
+    if (shmctl(ipc->shm_id, IPC_STAT, &info) != -1)
+        is_last = (info.shm_nattch == 1);
     shmdt(ipc->s_map);
     ipc->s_map = NULL;
 

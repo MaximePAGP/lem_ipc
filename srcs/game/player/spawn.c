@@ -69,6 +69,13 @@ bool    add_player_safe(t_ipc *ipc, int team_id) {
     size_t  x;
     size_t  y;
 
+    if (ipc->s_map->is_game_over) {
+        sem_unlock(ipc->sem_id);
+        G_IS_RUNNING = 0;
+        print_msg(STDERR_FILENO, "Game is over, relaunch to start a new one.\n");
+        return (false);
+    }
+
     if (!find_spawn_unsafe(ipc, &x, &y)) {
         sem_unlock(ipc->sem_id);
         G_IS_RUNNING = 0;

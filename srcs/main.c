@@ -11,7 +11,7 @@ volatile sig_atomic_t   G_IS_RUNNING = 1;
 void    init_signals(void);
 int     handle_args(int argc, char **argv);
 void    init_ipc(t_ipc *ipc);
-void    display_map(t_ipc *ipc);
+void    display_map_unsafe(t_ipc *ipc);
 void    clean_ipc(t_ipc *ipc);
 
 static void set_ipc_defaults(t_ipc *ipc) {
@@ -45,12 +45,21 @@ int main(int argc, char **argv) {
     // ipc.s_map->cells[ipc.player.y+1][ipc.player.x] = 3;
     wait_for_game_start_safe(&ipc);
     while (G_IS_RUNNING) {
-        
+        sem_lock(ipc.sem_id);
         if (is_dead_unsafe(&ipc, &ipc.player)) {
-            // should display message and quit properly
+            remove_player_unsafe(&ipc);
+            sem_unlock(ipc.sem_id);
+            print_msg(STDOUT_FILENO, "You were catched!\n");
             break;
         }
-        display_map(&ipc);
+        if (is_last_team_unsafe(&ipc)) {
+            sem_unlock(ipc.sem_id);
+            print_msg(STDOUT_FILENO, "You won!\n");
+            break;
+        }
+        display_map_unsafe(&ipc);
+        sem_unlock(ipc.sem_id);
+        sleep(1);
     }
     remove_player_safe(&ipc);
     clean_ipc(&ipc);

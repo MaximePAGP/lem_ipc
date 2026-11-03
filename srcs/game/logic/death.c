@@ -2,7 +2,6 @@
 #include "../../../inc/game_logic.h"
 #include "../../../inc/utils.h"
 
-
 /*
  @details a player is dead when two players of the same enemy team are adjacent to him (left, right, up, down)
 */

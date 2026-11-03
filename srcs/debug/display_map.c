@@ -19,9 +19,7 @@ static bool is_me(t_ipc *ipc, size_t x, size_t y) {
     return (ipc->player.pid != 0 && ipc->player.x == x && ipc->player.y == y);
 }
 
-void display_map(t_ipc *ipc) {
-    sem_lock(ipc->sem_id);
-
+void display_map_unsafe(t_ipc *ipc) {
     t_map *map = ipc->s_map;
 
     printf("\033[H\033[J");
@@ -48,6 +46,4 @@ void display_map(t_ipc *ipc) {
         printf("+-------");
     printf("+\n\n");
 
-    sem_unlock(ipc->sem_id);
-    sleep(1);
 }

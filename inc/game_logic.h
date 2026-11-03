@@ -12,6 +12,7 @@ typedef struct  s_team_count {
 
 bool    is_dead_unsafe(t_ipc *ipc, t_player *player);
 bool    has_two_full_teams_unsafe(t_ipc *ipc);
+bool    is_last_team_unsafe(t_ipc *ipc);
 void    wait_for_game_start_safe(t_ipc *ipc);
 
-#endif
+    #endif

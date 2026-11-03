@@ -1,6 +1,6 @@
-#include "../../inc/ipc.h"
-#include "../../inc/game_logic.h"
-#include "../../inc/utils.h"
+#include "../../../inc/ipc.h"
+#include "../../../inc/game_logic.h"
+#include "../../../inc/utils.h"
 
 
 /*
@@ -33,3 +33,4 @@ bool    is_dead_unsafe(t_ipc *ipc, t_player *player) {
 
     return (false);
 }
+

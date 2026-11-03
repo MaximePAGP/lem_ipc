@@ -6,6 +6,8 @@ DIR_GAME_SRCS		=	${DIR_SRCS}/game
 
 DIR_PLAYER_SRCS		=	${DIR_GAME_SRCS}/player
 
+DIR_GAME_LOGIC_SRCS	=	${DIR_GAME_SRCS}/logic
+
 
 
 
@@ -18,8 +20,8 @@ DEBUG_SRCS			= 	${DIR_SRCS}/debug/display_map.c \
 GAME_PLAYER_SRCS	= 	${DIR_PLAYER_SRCS}/mouvement.c \
 						${DIR_PLAYER_SRCS}/spawn.c \
 
-GAME_LOGIC_SRCS		= 	${DIR_GAME_SRCS}/logic.c \
-
+GAME_LOGIC_SRCS		= 	${DIR_GAME_LOGIC_SRCS}/death.c \
+						${DIR_GAME_LOGIC_SRCS}/start.c \
 
 
 IPC_SRCS			= 	${DIR_SRCS}/ipc/init.c \

@@ -23,6 +23,7 @@ GAME_PLAYER_SRCS	= 	${DIR_PLAYER_SRCS}/mouvement.c \
 GAME_LOGIC_SRCS		= 	${DIR_GAME_LOGIC_SRCS}/death.c \
 						${DIR_GAME_LOGIC_SRCS}/start.c \
 						${DIR_GAME_LOGIC_SRCS}/end.c \
+						${DIR_GAME_LOGIC_SRCS}/teams.c \
 
 
 IPC_SRCS			= 	${DIR_SRCS}/ipc/init.c \

@@ -52,9 +52,11 @@ int main(int argc, char **argv) {
             print_msg(STDOUT_FILENO, "You were catched!\n");
             break;
         }
-        if (is_last_team_unsafe(&ipc)) {
+        if (check_game_over_unsafe(&ipc)) {
+            int winner_team_id = ipc.s_map->winner_team_id;
+
             sem_unlock(ipc.sem_id);
-            print_msg(STDOUT_FILENO, "You won!\n");
+            announce_end_status(winner_team_id, ipc.player.team_id);
             break;
         }
         display_map_unsafe(&ipc);

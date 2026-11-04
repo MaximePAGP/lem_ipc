@@ -38,6 +38,7 @@ typedef struct  s_player {
 typedef struct s_map {
     int         cells[MAP_HEIGHT][MAP_WIDTH];
     bool        is_game_over;
+    int         winner_team_id;
     bool        is_game_started;
 }   t_map;
 

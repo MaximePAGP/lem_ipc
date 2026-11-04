@@ -42,6 +42,7 @@ static  void    create_ipc(t_ipc *ipc) {
     }
 
     ipc->s_map->is_game_over = false;
+    ipc->s_map->winner_team_id = EMPTY_CELL;
     ipc->s_map->is_game_started = false;
 
     if (semctl(ipc->sem_id, 0, SETVAL, 1) == -1)

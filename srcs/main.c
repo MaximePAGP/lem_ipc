@@ -33,25 +33,24 @@ int main(int argc, char **argv) {
     init_signals();
     init_random();
     init_ipc(&ipc);
+
     if (!add_player_safe(&ipc, team_id)) {
         clean_ipc(&ipc);
         return (EXIT_FAILURE);
     }
-    // ipc.s_map->cells[ipc.player.y][ipc.player.x] = 0;
-    // ipc.player.x = 3;
-    // ipc.player.y = 3;
-    // ipc.s_map->cells[ipc.player.y][ipc.player.x] = ipc.player.team_id;
-    // ipc.s_map->cells[ipc.player.y][ipc.player.x+1] = 3;
-    // ipc.s_map->cells[ipc.player.y+1][ipc.player.x] = 3;
+
     wait_for_game_start_safe(&ipc);
+
     while (G_IS_RUNNING) {
         sem_lock(ipc.sem_id);
+
         if (is_dead_unsafe(&ipc, &ipc.player)) {
             remove_player_unsafe(&ipc);
             sem_unlock(ipc.sem_id);
             print_msg(STDOUT_FILENO, "You were catched!\n");
             break;
         }
+
         if (check_game_over_unsafe(&ipc)) {
             int winner_team_id = ipc.s_map->winner_team_id;
 
@@ -59,10 +58,13 @@ int main(int argc, char **argv) {
             announce_end_status(winner_team_id, ipc.player.team_id);
             break;
         }
+
         display_map_unsafe(&ipc);
         sem_unlock(ipc.sem_id);
-        sleep(1);
+
+        usleep((EIGTH_MS + random_range(FIVE_MS)));
     }
+
     remove_player_safe(&ipc);
     clean_ipc(&ipc);
     return (EXIT_SUCCESS);

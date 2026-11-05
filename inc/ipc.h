@@ -23,6 +23,16 @@
     #endif
 
 
+    #ifndef EIGTH_MS
+        #define EIGTH_MS 8000 // 0,8s
+    #endif
+
+
+    #ifndef FIVE_MS
+        #define FIVE_MS 5000 // 0,5s
+    #endif
+
+
     #define EMPTY_CELL 0
 
 
